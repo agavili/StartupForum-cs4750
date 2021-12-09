@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <!-- Required meta tags -->
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no" />
+
+  <!-- Bootstrap CSS -->
+  <link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/css/bootstrap.min.css"
+    integrity="sha384-9aIt2nRpC12Uk9gS9baDl411NQApFmC26EwAOH8WgZl5MYYxFfc+NcPb1dKGj7Sk" crossorigin="anonymous" />
+
+  <!-- Glyphicon -->
+  <link href="//netdna.bootstrapcdn.com/bootstrap/3.0.0/css/bootstrap-glyphicons.css" rel="stylesheet" />
+
+  <title>Welcome to Startup Forum</title>
+</head>
+<div id="bodycontent">
+
+  <body style="overflow: scroll !important;">
+    {% block navbar %}
+    <script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+    <nav class="navbar navbar-expand-lg navbar-light bg-light">
+      <div class="container">
+        <div class="navbar-header">
+          <a class="navbar-brand" href="{{ url_for('index') }}">Home</a>
+          <button class="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarContent"
+            aria-controls="navbarContent" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+        </div>
+
+        <div class="collapse navbar-collapse" id="navbarContent">
+          <ul class="navbar-nav mr-auto">
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('organizations') }}">Organization</a>
+            </li>
+          </ul>
+          <ul class="nav navbar-nav">
+            {% if 'loggedin' not in session %}
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('authenticate') }}">Login</a>
+            </li>
+            {% else %}
+            <li class="nav-item dropdown">
+              <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#" role="button" aria-haspopup="true"
+                aria-expanded="false">Your Jobs</a>
+              <div class="dropdown-menu">
+                <a class="dropdown-item" href="{{ url_for('getSavedJobs') }}">Saved Jobs</a>
+                <a class="dropdown-item" href="{{ url_for('getJobApps') }}">Job Applications</a>
+                <a class="dropdown-item" href="{{ url_for('upcominginterviews') }}">Upcoming interviews</a>
+                <div class="dropdown-divider"></div>
+                <a class="dropdown-item" href="#">Separated link</a>
+              </div>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('getJobListings') }}">Job Listings</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('profile') }}">Profile</a>
+            </li>
+            <li class="nav-item">
+              <a class="nav-link" href="{{ url_for('logout') }}">Logout</a>
+            </li>
+            {% endif %}
+          </ul>
+        </div>
+      </div>
+    </nav>
+    <br />
+
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert {{ category }}"> {{ message|capitalize }} </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
+    {% endblock %}
+    {% block content %}{% endblock %}
+
+    <!-- Bootstrap scripts -->
+    <script src="https://cdn.jsdelivr.net/npm/popper.js@1.16.0/dist/umd/popper.min.js"
+      integrity="sha384-Q6E9RHvbIyZFJoft+2mJbHaEWldlvI9IOYy5n3zV9zzTtmI3UksdQRVvoxMfooAo"
+      crossorigin="anonymous"></script>
+    <script src="https://stackpath.bootstrapcdn.com/bootstrap/4.5.0/js/bootstrap.min.js"
+      integrity="sha384-OgVRvuATP1z7JjHLkuOU7Xw704+h835Lr+6QL9UvYjZE3Ipu6Tp75j7Bh/kR0JKI"
+      crossorigin="anonymous"></script>
+  </body>
+</div>
+
+{% block styles %}
+<style>
+  html {
+    font-size: 14px;
+  }
+
+  .nav-item {
+    margin-right: 10px;
+  }
+
+  /* for default WTForm buttons */
+  .btn-default {
+    background-color: #f8f9fa;
+    border: 1px solid #cccccc;
+  }
+
+  .btn-default:hover {
+    background-color: #555555;
+    border: 1px solid #555555;
+    color: white;
+  }
+
+  .alert.success {
+    background-color: green;
+  }
+
+  .alert.error {
+    background-color: red;
+  }
+</style>
+{% endblock %}
+
+</html>

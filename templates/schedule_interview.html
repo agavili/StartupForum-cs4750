@@ -1,0 +1,18 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Schedule Interview{% endblock %}
+
+
+{% block content %}
+<div class="container">
+    <h1>Schedule Interview for: {{user[1]}} {{user[2]}} ({{user[3]}})</h1>
+    <h5>Position: <strong>{{job[1]}}</strong></h5>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form.hidden_tag() }}
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

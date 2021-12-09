@@ -1,0 +1,95 @@
+{% extends 'base.html' %} {% import 'bootstrap/wtf.html' as wtf %} {% block
+title %}Profile{% endblock %} {% block content %}
+<div class="container">
+  {% if not my_account %}
+  <h2>{{ account[1] }} {{ account[2] }}'s Profile</h2>
+  {% else %}
+  <h2>Your Profile</h2>
+  {% endif %}
+  <div class="row">
+    {% if my_account %}
+    <div class="col-6">
+      <h3 class="mb-6">{{ account[1] }} {{ account[2] }}</h3>
+    </div>
+    <div class="col-6">
+      <div style="float: right; width: 70%">
+        <form
+          method="POST"
+          class="saveForm"
+          action="{{ url_for('edit_profile') }}"
+        >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button
+            class="btn btn-sm btn-success"
+            type="submit"
+            style="float: right; margin-bottom: 5px"
+          >
+            Edit Profile
+          </button>
+        </form>
+      </div>
+    </div>
+    {% endif %}
+  </div>
+  <p>{{ account[3] }}</p>
+  <p>
+    Experience: {% for e in exp %} {{ e[3] }} - Year: {{ e[4] }}, {% endfor %}
+  </p>
+  <p>Major: {{ major[3] }}</p>
+  <p>Minor: {% for mi in minor %} {{ mi[3] }} {% endfor %}</p>
+  <p>Classes: {% for c in classes %} {{ c[3] }}, {% endfor %}</p>
+  <p>Skills: {% for s in skills %} {{ s[1] }}, {% endfor %}</p>
+  <h5 class="mb-2">Organizations</h5>
+  <div style="height: 500px; overflow-y: scroll">
+    {% for org in orgs %}
+    <div class="card shadow m-3" style="border: none">
+      <div
+        class="card-header d-flex justify-content-between"
+        style="background-color: #23395d; margin-bottom: 0px"
+      >
+        <a class = "align-self-center" style="color: white;" href="">
+          {{ org[-1] }} —
+          <span style="opacity: 60%">{{ org[4] }}</span>
+        </a>
+        {% if my_account %}
+        <div class="justify-content-end text-center">
+          <form
+            method="POST"
+            class="joinForm"
+            id="{{ org[0] }}"
+            action="{{ url_for('leaveorg', id = org[0]) }}"
+          >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <button class="btn btn-danger" type="submit">Leave</button>
+          </form>
+          <form
+            method="POST"
+            id="{{ org[0] }}"
+            action="{{ url_for('postjob', id = org[0], orgname = org[-1]) }}"
+          >
+            <div class="mt-1">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button class="btn btn-info mr-2" type="submit">Post an Opening</button>
+            </div>
+          </form>
+        </div>
+        {% endif %}
+      </div>
+    
+    <div class="card-body">
+      <div style="float: left; width: 70%">
+        <p style="margin-bottom: 0px"><strong> {{ org[3] }} </strong></p>
+        <p>Members: {{ org[5] }}</p>
+        <p>Description: {{ org[6] }}</p>
+        <form method="POST" class="moreinfo" id="{{ org[0] }}" action="{{ url_for('orginfo', id = org[0])}}">
+            <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+            <button class="btn btn-secondary mr-2" type="submit">More Info...
+            </button>
+        </form>
+      </div>
+    </div>
+  </div>
+    {% endfor %}
+  </div>
+</div>
+{% endblock %}

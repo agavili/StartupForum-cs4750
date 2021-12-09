@@ -1,0 +1,77 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/base.css') }}" />
+{% extends 'base.html' %} 
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<div class = "col text-center">
+    <div class="text-center">
+      <h1 class="mt-2">Job Listings </h1>
+      <p><strong>Startups near you are hiring!</strong></p>
+      <div class = "row justify-content-center align-items-top">
+        <span class="glyphicon glyphicon-filter"></span>
+        <h5 class="mx-2">Filters</h5>
+        <form method="POST" >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <select id="filters">
+            <option value= "1" {% if request_id==1 %} selected {% endif %}>New to Old</option>
+            <option value= "2" {% if request_id==2 %} selected {% endif %}>Old to New</option>
+            <option value= "3" {% if request_id==3 %} selected {% endif %}>Small Startup (1-10 Members) only</option>
+            <option value= "4" {% if request_id==4 %} selected {% endif %}>Medium Startup (11-50 Members) only</option>
+            <option value= "5" {% if request_id==5 %} selected {% endif %}>Large Startup (51+ Members) only</option>
+            <option value= "6" {% if request_id==6 %} selected {% endif %}>Your organizations only</option>
+          </select>
+        </form>
+      </div>
+      <hr class="mt-0 mb-4" />
+      <div class="offset-lg-4">
+      {% for job in joblistings %}
+      <div class="card my-3" style="width: 40rem">
+        <div class="card-header bg-dark text-white">
+          Opening for:
+          <strong> {{ job[0]}} </strong>
+        </div>
+        <div class="card-body">
+          <h5 class="card-title">{{ job[1] }}</h5>
+          <p class="card-text">{{ job[2] }}</p>
+          <div class="row justify-content-center">
+            <form method="POST" class="jobApply" id="{{ job[3] }}" action="{{ url_for('applytojob', id = job[3])}}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button class="btn btn-primary mr-2" type="submit">Apply</button>
+            </form>
+            <form method="POST" class="jobSave" id="{{ job[3] }}" action="{{ url_for('savejob', id = job[3])}}">
+              <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+              <button class="btn btn-secondary" type="submit">Save Job</button>
+            </form>
+          </div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    </div>
+</div>
+<script type=text/javascript>
+  $(document).ready(function() {
+    console.log("READY") 
+  $(function() {
+          $("#filters").on("change", function(event){
+            console.log("CHANGE")
+            filter_choice = $("#filters").val()
+            $.ajax({
+              type:"POST",
+              url : "filtered-jobs",
+              data: {
+                filter_choice: filter_choice,
+
+                csrf_token: "{{ csrf_token() }}",
+              },
+            })
+            .done(function(data){
+              $("#bodycontent").html(data)
+              console.log("{{ request_id }}")
+              console.log("function is done!")
+            });
+          });
+    });
+  });
+</script>
+{% endblock %}

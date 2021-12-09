@@ -1,0 +1,104 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/base.css') }}" />
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% extends 'base.html' %}
+
+{% block content %}
+
+<div class="container">
+    <h1>Organization: {{org_details[5]}}</h1>
+    <p> {{ org_details[1] }} - {{ org_details[2] }} </p>
+    <p> Size: {{org_details[3]}}</p>
+    <p>Description: {{org_details[4]}}</p>
+    <p>Seeking: {% for s in skills %}
+        {{s[0]}},
+        {% endfor %}
+    </p>
+    {% if my_org %}
+    <form method="POST" class="saveForm" action="{{ url_for('add_org_skill', id=org_details[0]) }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button class="btn btn-success mr-2" type="submit">Add Required Skills</button>
+    </form>
+    <div class="row">
+        <div class="col-md">
+            <h2>Applied</h2>
+            <div style="height: 750px; overflow-y: scroll">
+                {% for job in appliedjobs %}
+                <div class="card shadow m-3" style="border: none">
+                    <div class="card-header d-flex justify-content-between"
+                        style="background-color: #23395d; margin-bottom: 0px">
+                        <a class="align-self-center" style="color: white;"
+                            href="{{ url_for('view_profile', id=job[1]) }}">
+                            {{job[2]}} {{job[3]}} -
+                            <span style="opacity: 60%">{{ job[4] }}</span>
+                        </a>
+                        <div class="justify-content-end text-center">
+                            <form method="POST" class="joinForm" id="{{ job[1] }}"
+                                action="{{url_for('rejectapp', id =job[1], id_2=job[5], id_3 = job[0])}}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <button class="btn btn-danger" type="submit">Reject</button>
+                            </form>
+                            <form method="POST" id="{{ job[1] }}"
+                                action="{{ url_for('scheduleinterview', id =job[1], id_2=job[5], id_3= job[0])}}">
+                                <div class="mt-1">
+                                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                    <button class="btn btn-info mr-2" type="submit">Interview</button>
+                                </div>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div style="float: left; width: 70%">
+                            <p style="margin-bottom: 0px"><strong> Position: {{job[6]}} </strong></p>
+                            <p>Description: {{job[7]}}</p>
+
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+        <div class="col-md">
+            <h2>Interviewing</h2>
+
+            <div style="height: 750px; overflow-y: scroll">
+                {% for job in interviewingjobs %}
+                <div class="card shadow m-3" style="border: none">
+                    <div class="card-header d-flex justify-content-between"
+                        style="background-color: #23395d; margin-bottom: 0px">
+                        <a class="align-self-center" style="color: white;"
+                            href="{{ url_for('view_profile', id=job[1]) }}">
+                            {{job[2]}} {{job[3]}} -
+                            <span style="opacity: 60%">{{ job[4] }}</span>
+                        </a>
+
+                        <div class="justify-content-end text-center">
+                            <form method="POST" class="interviewdone" id="{{ job[1] }}"
+                                action="{{url_for('interviewdone', id =job[1], id_2=job[5], id_3 = job[0])}}">
+                                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                                <button class="btn btn-light" type="submit">Completed Interview <span
+                                        class="	glyphicon glyphicon-check"></span> </button>
+                            </form>
+
+                        </div>
+                    </div>
+
+                    <div class="card-body">
+                        <div style="float: left; width: 70%">
+                            <p style="margin-bottom: 0px"><strong> Position: {{job[6]}} </strong></p>
+                            <p></p>
+                            <p><strong>Description: </strong>{{job[7]}}</p>
+                            <p><strong>Location: </strong>{{job[9]}}</p>
+                            <p><strong>Datetime: </strong>{{job[8]}}</p>
+                            <p><strong>Round: </strong>{{job[10]}}</p>
+                        </div>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+        </div>
+    </div>
+    {% endif %}
+</div>
+{% endblock %}

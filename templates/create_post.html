@@ -1,0 +1,16 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Create Post'{% endblock %}
+
+{% block content %}
+<div class="container">
+    <h1>{{ ('Create Post') }}</h1>
+    <div class="row">
+        <div class="col-md-4">
+            {{ form.hidden_tag() }}
+            {{ wtf.quick_form(form) }}
+        </div>
+    </div>
+</div>
+{% endblock %}

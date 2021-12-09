@@ -1,0 +1,37 @@
+<link rel= "stylesheet" type= "text/css" href= "{{ url_for('static',filename='styles/base.css') }}">
+<script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+{% extends 'base.html' %}
+
+
+{% block content %}
+<div class = "col-md-4 offset-xl-4">
+    <div class="text-center">
+            <h1 class="mt-2">Your Job Applications</h1>
+            <hr class="mt-0 mb-4" />
+            {% for job in savedApplications %}
+            <!-- <p>{{ job }}</p> -->
+            <div class="card border-info my-3" style="width: 40rem">
+              <div class="card-header bg-info text-white">
+
+                Organization: 
+                <strong> {{ job[3] }} </strong>
+                <p></p>
+                <form method="POST" class="REMOVEAPP" id="{{ job[0] }}" action="{{ url_for('withdrawapp', id = job[0])}}">
+                    <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                    <button class="btn btn-light mr-2" type="submit">Withdraw Application
+                    </button>
+                </form>
+              </div>
+              <div class="card-body text-info">
+                <h5 class="card-title">{{ job[1] }}</h5>
+                <p class="card-text">Description: {{ job [2] }}</p>
+               <strong><p class="card-text">Status: {{ job[5]}}</p></strong> 
+              </div>
+              <div class="card-footer">
+                <small class="text-muted">Applied on: {{ job[4] }}</small>
+              </div>
+            </div>
+            {% endfor %}
+          </div>
+      </div>
+{% endblock %}

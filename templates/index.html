@@ -1,0 +1,96 @@
+<link rel="stylesheet" type="text/css" href="{{ url_for('static',filename='styles/base.css') }}" />
+{% extends 'base.html' %} {% block title %}Home{% endblock %}
+
+{% block content %}
+<script src="https://code.jquery.com/jquery-3.2.1.min.js"></script>
+<div id = "idk"></div>
+<div class="d-flex justify-content-around scrollable">
+  <div>
+    <h1 class="mt-2 text-center">The Startup Forum</h1>
+    <div class="text-center">
+      <p><strong>Welcome back, {{ username }}!</strong></p>
+      <div class = "row justify-content-center align-items-top">
+        <span class="glyphicon glyphicon-filter"></span>
+        <h5 class="mx-2">Filters</h5>
+        <form method="POST" >
+          <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+          <select id="filters">
+            <option value= "1" {% if request_id==1 %} selected {% endif %}>New to Old</option>
+            <option value= "2" {% if request_id==2 %} selected {% endif %}>Old to New</option>
+            <option value= "3" {% if request_id==3 %} selected {% endif %}>Small Startup (1-10 Members) only</option>
+            <option value= "4" {% if request_id==4 %} selected {% endif %}>Medium Startup (11-50 Members) only</option>
+            <option value= "5" {% if request_id==5 %} selected {% endif %}>Large Startup (51+ Members) only</option>
+            <option value= "6" {% if request_id==6 %} selected {% endif %}>Your organizations only</option>
+          </select>
+        </form>
+      </div>
+    </div>
+    <div class="text-center mt-2">
+      <hr class="mt-0 mb-4" />
+      {% for post in forumposts %}
+      <div class="card border-info my-3 ml-4" style="width: 40rem">
+        <div class="card-header bg-info text-white">
+          Posted by:
+          <strong> {{ post[0] }} </strong>
+        </div>
+        <div class="card-body text-info">
+          <h5 class="card-title">{{ post[1] }}</h5>
+          <p class="card-text">{{ post [2] }}</p>
+        </div>
+        <div class="card-footer">
+          <small class="text-muted">Posted at {{ post[3] }}</small>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+  </div>
+  <div class=" mt-4 text-center">
+    <div style="margin-top: 6rem;" class="jumbotron">
+      {% if inOrg %}
+      <h1>{{ username }}, put your startup on the map!</h1>
+      <p> Since you're part of an organization, you can post to the public forum below!</p>
+      <form method="POST" id="{{ user_id }}" action="{{ url_for('postToForum', user_id = user_id )}}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button class="btn btn-primary btn-lg" type="submit">Post</button>
+      </form>
+      {% else %}
+      <h1>{{ username }}, want to join something special? </h1>
+      <p> Sign up for an organization to post on StartupForum!</p>
+      <button class="btn btn-primary btn-lg" type="submit"><a style="color: white;" href="{{ url_for('organizations') }}">View organizations</a></button>
+      {% endif %}
+    </div>
+  </div>
+</div>
+<script type=text/javascript>
+  $(document).ready(function() {
+    console.log("READY") 
+  $(function() {
+          $("#filters").on("change", function(event){
+            console.log("CHANGE")
+            filter_choice = $("#filters").val()
+            console.log("filter choice is ", filter_choice)
+            // var dic = {}
+            // dic['filter_choice'] = filter_choice
+            // dic['csrf_token'] = "{{ csrf_token() }}"
+            
+            // console.log("going to send: ");
+            // console.log(dic);
+            $.ajax({
+              type:"POST",
+              url : "filtered",
+              data: {
+                filter_choice: filter_choice,
+
+                csrf_token: "{{ csrf_token() }}",
+              },
+            })
+            .done(function(data){
+              $("#bodycontent").html(data)
+              console.log("{{ request_id }}")
+              console.log("function is done!")
+            });
+          });
+    });
+  });
+</script>
+{% endblock %}

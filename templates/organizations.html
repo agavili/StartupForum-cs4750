@@ -1,0 +1,58 @@
+{% extends 'base.html' %}
+{% import 'bootstrap/wtf.html' as wtf %}
+
+{% block title %}Organizations{% endblock %}
+
+{% block content %}
+<h1>{{ ('Startup Organizations') }}</h1>
+<div class="row">
+    <div class="col">
+        <form method="POST" class="joinForm" id=""
+        action="{{ url_for('createOrg') }}">
+        <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+        <button class="btn btn-primary mr-2" type="submit">Create Startup</button>
+    </form>
+
+        {% for i in orglist %}
+            <!-- <tr>{{ i.1 }} - {{i.2}} - {{i.3}} - {{i.4}} - {{i.5}}</tr> -->
+            <div class="card shadow m-3" style="border: none">
+                <div
+                  class="card-header d-flex justify-content-between" 
+                  style="background-color: #23395d; margin-bottom: 0px"
+                >
+                  <a class = "align-self-center" style="color: white;" href="">
+                    {{ i[-1] }} —
+                    <span style="opacity: 60%">{{ i[2] }}</span>
+                  </a>
+                  <div class="justify-content-end text-center">
+                    <form method="POST" class="joinForm" id="{{ i[0] }}"
+                action="{{ url_for('joinorg', id = i[0]) }}">
+                <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                <button class="btn btn-primary mr-2" type="submit">Join</button>
+            </form>
+                  </div>
+                </div>
+              
+              <div class="card-body">
+                <div style="float: left; width: 70%">
+                  <p style="margin-bottom: 0px"><strong> {{ i[1] }} </strong></p>
+                  <p>Members: {{ i[3] }}</p>
+                  <p>Description: {{ i[4] }}</p>
+                  <form method="POST" class="moreinfo" id="{{ i[0] }}" action="{{ url_for('orginfo', id = i[0])}}">
+                      <input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
+                      <button class="btn btn-secondary mr-2" type="submit">More Info...
+                      </button>
+                  </form>
+                </div>
+              </div>
+            </div>
+
+                  <!-- here -->
+        {% endfor %}
+        <!-- <form action = "http://localhost:5000/organizations" method = "post">
+            <p><input type = "text" name = "nm" /></p>
+            <p><input type = "submit" value = "submit" /></p>
+         </form> -->
+</div>
+</div>
+{% endblock %}
